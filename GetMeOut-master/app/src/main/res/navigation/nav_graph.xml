@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/title">
+    <fragment
+        android:id="@+id/title"
+        android:name="com.example.getmeout.view.Title"
+        android:label="fragment_title"
+        tools:layout="@layout/fragment_title" >
+        <action
+            android:id="@+id/action_title_to_settings"
+            app:destination="@id/settings" />
+    </fragment>
+    <fragment
+        android:id="@+id/settings"
+        android:name="com.example.getmeout.view.Settings"
+        android:label="Settings" >
+        <action
+            android:id="@+id/action_settings_to_editContacts"
+            app:destination="@id/editContacts" />
+        <action
+            android:id="@+id/action_settings_to_editMessages"
+            app:destination="@id/editMessages" />
+    </fragment>
+    <fragment
+        android:id="@+id/editMessages"
+        android:name="com.example.getmeout.view.EditMessages"
+        android:label="fragment_edit_messages"
+        tools:layout="@layout/fragment_edit_messages" />
+    <fragment
+        android:id="@+id/editContacts"
+        android:name="com.example.getmeout.view.EditContacts"
+        android:label="fragment_edit_contacts"
+        tools:layout="@layout/fragment_edit_contacts" />
+</navigation>
