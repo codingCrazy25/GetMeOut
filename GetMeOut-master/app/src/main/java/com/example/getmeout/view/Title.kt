@@ -82,9 +82,11 @@ class Title : Fragment() {
 
                 println( message)
 
+                var final_message = message
+
                 val smsManager = SmsManager.getDefault()
                     for (contact in all_contacts_values) {
-                        sendSMS(contact.phoneNumber, message, smsManager = smsManager)
+                        sendSMS(contact.phoneNumber, final_message, smsManager = smsManager)
                     }
 
                 }
