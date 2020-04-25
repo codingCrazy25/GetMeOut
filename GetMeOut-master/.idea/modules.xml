@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/GetMeOut.iml" filepath="$PROJECT_DIR$/GetMeOut.iml" group="GetMeOut" />
+      <module fileurl="file://$PROJECT_DIR$/GetMeOut-master.iml" filepath="$PROJECT_DIR$/GetMeOut-master.iml" group="GetMeOut-master" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="GetMeOut/app" />
+    </modules>
+  </component>
+</project>

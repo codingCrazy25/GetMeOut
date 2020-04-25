@@ -2,6 +2,9 @@ package com.example.getmeout.view
 
 
 import android.Manifest
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Message
@@ -45,6 +48,12 @@ class Title : Fragment() {
     private lateinit var contactViewModel: ContactViewModel
     private lateinit var messageViewModel: MessageViewModel
 
+//    var locationString: String = ""
+//        get() = field
+//        set( value ){
+//            field = value
+//        }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -62,11 +71,16 @@ class Title : Fragment() {
         contactViewModel = ViewModelProvider(this).get(ContactViewModel::class.java)
         messageViewModel = ViewModelProvider(this).get(MessageViewModel::class.java)
 
+        val location = com.example.getmeout.view.Settings().locationString
+
         binding.sendBtn.setOnClickListener {
 
             GlobalScope.launch {
                 var all_contacts_values = contactViewModel.getAllSelected()
-                var message = messageViewModel.getAllMessage_VALUES()[0].message
+                var message = messageViewModel.getAllMessage_VALUES()[0].message + location
+//                        com.example.getmeout.view.Settings().locationString
+
+                println( message)
 
                 val smsManager = SmsManager.getDefault()
                     for (contact in all_contacts_values) {

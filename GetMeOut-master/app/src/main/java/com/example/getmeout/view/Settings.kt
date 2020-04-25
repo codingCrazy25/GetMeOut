@@ -1,17 +1,6 @@
 package com.example.getmeout.view
 
 
-import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
-import androidx.navigation.findNavController
-import com.example.getmeout.R
-import com.example.getmeout.view.SettingsDirections
-import com.example.getmeout.databinding.FragmentSettingsBinding
-
 import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -21,34 +10,46 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
+import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat.getSystemService
+import androidx.databinding.DataBindingUtil
+import androidx.navigation.findNavController
+import com.example.getmeout.R
+import com.example.getmeout.view.SettingsDirections
+import com.example.getmeout.databinding.FragmentSettingsBinding
 import com.google.android.gms.location.*
-import kotlinx.android.synthetic.main.fragment_settings.*
 
 /**
  * A simple [Fragment] subclass.
  */
-private const val PERMISSION_REQUEST = 10
-
 class Settings : Fragment() {
+
     //    SAUL
     val PERMISSION_ID = 42
     lateinit var mFusedLocationClient: FusedLocationProviderClient
+
+    var locationString: String = ""
+        get() = field
+        set( value ){
+            field = value
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val binding = DataBindingUtil.inflate<FragmentSettingsBinding>(
-            inflater,
-            R.layout.fragment_settings, container, false
-        )
+        val binding = DataBindingUtil.inflate<FragmentSettingsBinding>(inflater,
+            R.layout.fragment_settings,container,false)
         // Inflate the layout for this fragment
+
 
         // Button to navigate to the Edit Contacts page
         binding.selectContactsBtn.setOnClickListener { view: View ->
@@ -60,20 +61,18 @@ class Settings : Fragment() {
             view.findNavController().navigate(SettingsDirections.actionSettingsToEditMessages())
         }
 
-//        SAUL
-
+        //        SAUL
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this.activity!!)
-        binding.locationBtn.setOnClickListener{ getLastLocation() };
+        binding.locationBtn.setOnClickListener{ getLastLocation() }
 
         return binding.root
     }
-
 
     // SAUL
     @SuppressLint("MissingPermission")
     private fun getLastLocation() {
 //        String variable to store location as a string
-        var locationString = "";
+        var lastLocation  = ""
 
         if (checkPermissions()) {
             if (isLocationEnabled()) {
@@ -84,15 +83,19 @@ class Settings : Fragment() {
                         requestNewLocationData()
                     } else {
 //                        Add longitude, latitude to locationString
-                        locationString += "Latitude : " + location.latitude.toString();
-                        locationString += " Longitude: " + location.longitude.toString();
-//                        println("checkPermissions: " + locationString);
+//                        locationString += "Latitude : " + location.latitude.toString()
+//                        locationString += " Longitude: " + location.longitude.toString()
+                        lastLocation += " Longitude: " + location.longitude.toString()
+                        lastLocation += "Latitude : " + location.latitude.toString()
+
+                        this@Settings.locationString = lastLocation
+                        println("checkPermissions: " + locationString)
 
                     }
 //                    initaitate clipboard object to add locationString to the clipboard
-                    val clipboard = activity?.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager;
-                    val clip = ClipData.newPlainText("Location", locationString);
-                    clipboard.setPrimaryClip(clip);
+                    val clipboard = activity?.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                    val clip = ClipData.newPlainText("Location", locationString)
+                    clipboard.setPrimaryClip(clip)
                 }
             } else {
                 Toast.makeText(this.context!!, "Turn on location", Toast.LENGTH_LONG).show()
@@ -105,6 +108,7 @@ class Settings : Fragment() {
 
     }
 
+//    SAUL
     @SuppressLint("MissingPermission")
     private fun requestNewLocationData() {
         var mLocationRequest = LocationRequest()
@@ -115,66 +119,73 @@ class Settings : Fragment() {
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this.activity!!)
         mFusedLocationClient.requestLocationUpdates(
-            mLocationRequest, mLocationCallback,
-            Looper.myLooper()
+                mLocationRequest, mLocationCallback,
+                Looper.myLooper()
         )
     }
 
     private val mLocationCallback = object : LocationCallback() {
-        var locationString = "";
+        var lastLocation = ""
 
         override fun onLocationResult(locationResult: LocationResult) {
             var mLastLocation: Location = locationResult.lastLocation
 
-            locationString += "Latitude : " + mLastLocation.latitude.toString();
-            locationString += " Longitude: " + mLastLocation.longitude.toString();
-            println("onLocationResult: " + locationString);
+//            locationString += "Latitude : " + mLastLocation.latitude.toString()
+//            locationString += " Longitude: " + mLastLocation.longitude.toString()
+//            println("onLocationResult: " + locationString)
+            lastLocation += "Latitude : " + mLastLocation.latitude.toString()
+            lastLocation += " Longitude: " + mLastLocation.longitude.toString()
 
-            val clipboard = activity?.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager;
-            val clip = ClipData.newPlainText("Location", locationString);
-            clipboard.setPrimaryClip(clip);
+            this@Settings.locationString = lastLocation
+//           var titlePage = Title()
+////            titlePage.locationString = lastLocation
+//            println( "title location: " + titlePage.locationString)
+
+            val clipboard = activity?.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText("Location", locationString)
+            clipboard.setPrimaryClip(clip)
 
         }
     }
-//Check if location is enabled in the device
+    //Check if location is enabled in the device
     private fun isLocationEnabled(): Boolean {
         var locationManager: LocationManager =
-            activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+                activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
-            LocationManager.NETWORK_PROVIDER
+                LocationManager.NETWORK_PROVIDER
         )
     }
-//Check for location permissions have been allowed for the app
+    //Check for location permissions have been allowed for the app
     private fun checkPermissions(): Boolean {
         if (ActivityCompat.checkSelfPermission(
-                this.context!!,
-                android.Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(
-                this.context!!,
-                android.Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
+                        this.context!!,
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(
+                        this.context!!,
+                        android.Manifest.permission.ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED
         ) {
             return true
         }
         return false
     }
-//Request Location permissions
+    //Request Location permissions
     private fun requestPermissions() {
         ActivityCompat.requestPermissions(
-            this.activity!!,
-            arrayOf(
-                android.Manifest.permission.ACCESS_COARSE_LOCATION,
-                android.Manifest.permission.ACCESS_FINE_LOCATION
-            ),
-            PERMISSION_ID
+                this.activity!!,
+                arrayOf(
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                        android.Manifest.permission.ACCESS_FINE_LOCATION
+                ),
+                PERMISSION_ID
         )
     }
 
     override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
+            requestCode: Int,
+            permissions: Array<String>,
+            grantResults: IntArray
     ) {
         if (requestCode == PERMISSION_ID) {
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
@@ -182,5 +193,9 @@ class Settings : Fragment() {
             }
         }
     }
+
+//    public fun getLocationString(): String {
+//        return locationString
+//    }
 
 }
