@@ -63,6 +63,7 @@ class Settings : Fragment() {
 
         //        SAUL
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this.activity!!)
+//        binding.locationBtn.setOnClickListener{ getLastLocation() }
         binding.locationBtn.setOnClickListener{ getLastLocation() }
 
         return binding.root
@@ -71,32 +72,10 @@ class Settings : Fragment() {
     // SAUL
     @SuppressLint("MissingPermission")
     private fun getLastLocation() {
-//        String variable to store location as a string
-        var lastLocation  = ""
 
         if (checkPermissions()) {
             if (isLocationEnabled()) {
-
-                mFusedLocationClient.lastLocation.addOnCompleteListener(this.activity!!) { task ->
-                    var location: Location? = task.result
-                    if (location == null) {
-                        requestNewLocationData()
-                    } else {
-//                        Add longitude, latitude to locationString
-//                        locationString += "Latitude : " + location.latitude.toString()
-//                        locationString += " Longitude: " + location.longitude.toString()
-                        lastLocation += " Longitude: " + location.longitude.toString()
-                        lastLocation += "Latitude : " + location.latitude.toString()
-
-                        this@Settings.locationString = lastLocation
-                        println("checkPermissions: " + locationString)
-
-                    }
-//                    initaitate clipboard object to add locationString to the clipboard
-                    val clipboard = activity?.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                    val clip = ClipData.newPlainText("Location", locationString)
-                    clipboard.setPrimaryClip(clip)
-                }
+                requestNewLocationData()
             } else {
                 Toast.makeText(this.context!!, "Turn on location", Toast.LENGTH_LONG).show()
                 val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
@@ -125,7 +104,7 @@ class Settings : Fragment() {
     }
 
     private val mLocationCallback = object : LocationCallback() {
-        var lastLocation = ""
+        var lastLocationString = ""
 
         override fun onLocationResult(locationResult: LocationResult) {
             var mLastLocation: Location = locationResult.lastLocation
@@ -133,13 +112,13 @@ class Settings : Fragment() {
 //            locationString += "Latitude : " + mLastLocation.latitude.toString()
 //            locationString += " Longitude: " + mLastLocation.longitude.toString()
 //            println("onLocationResult: " + locationString)
-            lastLocation += "Latitude : " + mLastLocation.latitude.toString()
-            lastLocation += " Longitude: " + mLastLocation.longitude.toString()
+            lastLocationString += "Latitude : " + mLastLocation.latitude.toString()
+            lastLocationString += " Longitude: " + mLastLocation.longitude.toString()
 
-            this@Settings.locationString = lastLocation
+            this@Settings.locationString = lastLocationString
 //           var titlePage = Title()
 ////            titlePage.locationString = lastLocation
-//            println( "title location: " + titlePage.locationString)
+            println( "onLocationResult: " + locationString)
 
             val clipboard = activity?.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
             val clip = ClipData.newPlainText("Location", locationString)
@@ -193,9 +172,5 @@ class Settings : Fragment() {
             }
         }
     }
-
-//    public fun getLocationString(): String {
-//        return locationString
-//    }
 
 }
