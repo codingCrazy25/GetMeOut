@@ -61,116 +61,115 @@ class Settings : Fragment() {
             view.findNavController().navigate(SettingsDirections.actionSettingsToEditMessages())
         }
 
-        //        SAUL
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this.activity!!)
+        //        Button is currently not active because location is being handled elsewhere
+//        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this.activity!!)
 //        binding.locationBtn.setOnClickListener{ getLastLocation() }
-        binding.locationBtn.setOnClickListener{ getLastLocation() }
 
         return binding.root
     }
 
-    // SAUL
-    @SuppressLint("MissingPermission")
-    private fun getLastLocation() {
-
-        if (checkPermissions()) {
-            if (isLocationEnabled()) {
-                requestNewLocationData()
-            } else {
-                Toast.makeText(this.context!!, "Turn on location", Toast.LENGTH_LONG).show()
-                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                startActivity(intent)
-            }
-        } else {
-            requestPermissions()
-        }
-
-    }
+    // COMMENTED OUT AT THE MOMENT BECAUSE LOCATION IS BEING HANDLED AT Title.kt
+//    @SuppressLint("MissingPermission")
+//    private fun getLastLocation() {
+//
+//        if (checkPermissions()) {
+//            if (isLocationEnabled()) {
+//                requestNewLocationData()
+//            } else {
+//                Toast.makeText(this.context!!, "Turn on location", Toast.LENGTH_LONG).show()
+//                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+//                startActivity(intent)
+//            }
+//        } else {
+//            requestPermissions()
+//        }
+//
+//    }
 
 //    SAUL
-    @SuppressLint("MissingPermission")
-    private fun requestNewLocationData() {
-        var mLocationRequest = LocationRequest()
-        mLocationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        mLocationRequest.interval = 0
-        mLocationRequest.fastestInterval = 0
-        mLocationRequest.numUpdates = 1
+//    @SuppressLint("MissingPermission")
+//    private fun requestNewLocationData() {
+//        var mLocationRequest = LocationRequest()
+//        mLocationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+//        mLocationRequest.interval = 0
+//        mLocationRequest.fastestInterval = 0
+//        mLocationRequest.numUpdates = 1
+//
+//        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this.activity!!)
+//        mFusedLocationClient.requestLocationUpdates(
+//                mLocationRequest, mLocationCallback,
+//                Looper.myLooper()
+//        )
+//    }
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this.activity!!)
-        mFusedLocationClient.requestLocationUpdates(
-                mLocationRequest, mLocationCallback,
-                Looper.myLooper()
-        )
-    }
-
-    private val mLocationCallback = object : LocationCallback() {
-        var lastLocationString = ""
-
-        override fun onLocationResult(locationResult: LocationResult) {
-            var mLastLocation: Location = locationResult.lastLocation
-
-//            locationString += "Latitude : " + mLastLocation.latitude.toString()
-//            locationString += " Longitude: " + mLastLocation.longitude.toString()
-//            println("onLocationResult: " + locationString)
-            lastLocationString += "Latitude : " + mLastLocation.latitude.toString()
-            lastLocationString += " Longitude: " + mLastLocation.longitude.toString()
-
-            this@Settings.locationString = lastLocationString
-//           var titlePage = Title()
-////            titlePage.locationString = lastLocation
-            println( "onLocationResult: " + locationString)
-
-            val clipboard = activity?.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-            val clip = ClipData.newPlainText("Location", locationString)
-            clipboard.setPrimaryClip(clip)
-
-        }
-    }
+//    private val mLocationCallback = object : LocationCallback() {
+//        var lastLocationString = ""
+//
+//        override fun onLocationResult(locationResult: LocationResult) {
+//            var mLastLocation: Location = locationResult.lastLocation
+//
+////            locationString += "Latitude : " + mLastLocation.latitude.toString()
+////            locationString += " Longitude: " + mLastLocation.longitude.toString()
+////            println("onLocationResult: " + locationString)
+//            lastLocationString += "Latitude : " + mLastLocation.latitude.toString()
+//            lastLocationString += " Longitude: " + mLastLocation.longitude.toString()
+//
+//            this@Settings.locationString = lastLocationString
+////           var titlePage = Title()
+//////            titlePage.locationString = lastLocation
+//            println( "onLocationResult: " + locationString)
+//
+//            val clipboard = activity?.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+//            val clip = ClipData.newPlainText("Location", locationString)
+//            clipboard.setPrimaryClip(clip)
+//
+//        }
+//    }
     //Check if location is enabled in the device
-    private fun isLocationEnabled(): Boolean {
-        var locationManager: LocationManager =
-                activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
-                LocationManager.NETWORK_PROVIDER
-        )
-    }
+//    private fun isLocationEnabled(): Boolean {
+//        var locationManager: LocationManager =
+//                activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+//        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
+//                LocationManager.NETWORK_PROVIDER
+//        )
+//    }
     //Check for location permissions have been allowed for the app
-    private fun checkPermissions(): Boolean {
-        if (ActivityCompat.checkSelfPermission(
-                        this.context!!,
-                        android.Manifest.permission.ACCESS_COARSE_LOCATION
-                ) == PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(
-                        this.context!!,
-                        android.Manifest.permission.ACCESS_FINE_LOCATION
-                ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            return true
-        }
-        return false
-    }
-    //Request Location permissions
-    private fun requestPermissions() {
-        ActivityCompat.requestPermissions(
-                this.activity!!,
-                arrayOf(
-                        android.Manifest.permission.ACCESS_COARSE_LOCATION,
-                        android.Manifest.permission.ACCESS_FINE_LOCATION
-                ),
-                PERMISSION_ID
-        )
-    }
+//    private fun checkPermissions(): Boolean {
+//        if (ActivityCompat.checkSelfPermission(
+//                        this.context!!,
+//                        android.Manifest.permission.ACCESS_COARSE_LOCATION
+//                ) == PackageManager.PERMISSION_GRANTED &&
+//                ActivityCompat.checkSelfPermission(
+//                        this.context!!,
+//                        android.Manifest.permission.ACCESS_FINE_LOCATION
+//                ) == PackageManager.PERMISSION_GRANTED
+//        ) {
+//            return true
+//        }
+//        return false
+//    }
+//    Request Location permissions
+//    private fun requestPermissions() {
+//        ActivityCompat.requestPermissions(
+//                this.activity!!,
+//                arrayOf(
+//                        android.Manifest.permission.ACCESS_COARSE_LOCATION,
+//                        android.Manifest.permission.ACCESS_FINE_LOCATION
+//                ),
+//                PERMISSION_ID
+//        )
+//    }
 
-    override fun onRequestPermissionsResult(
-            requestCode: Int,
-            permissions: Array<String>,
-            grantResults: IntArray
-    ) {
-        if (requestCode == PERMISSION_ID) {
-            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                getLastLocation()
-            }
-        }
-    }
+//    override fun onRequestPermissionsResult(
+//            requestCode: Int,
+//            permissions: Array<String>,
+//            grantResults: IntArray
+//    ) {
+//        if (requestCode == PERMISSION_ID) {
+//            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+//                getLastLocation()
+//            }
+//        }
+//    }
 
 }

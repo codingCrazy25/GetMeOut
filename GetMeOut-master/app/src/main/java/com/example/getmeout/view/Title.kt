@@ -100,7 +100,7 @@ class Title : Fragment() {
                     timeout += 1
                 }
                 var final_message = message.message + "\n" + location_txt
-
+                println( final_message)
                 val smsManager = SmsManager.getDefault()
                     for (contact in all_contacts_values) {
                         sendSMS(contact.phoneNumber, final_message, smsManager = smsManager)
@@ -187,23 +187,13 @@ class Title : Fragment() {
     // SAUL
     @SuppressLint("MissingPermission")
     private fun getLastLocation(){
-//        String variable to store location as a string
-        var locationString = "";
 
         if (checkPermissions()) {
             if (isLocationEnabled()) {
-
                 mFusedLocationClient.lastLocation.addOnCompleteListener(this.activity!!) { task ->
                     var location: Location? = task.result
-                    if (location == null) {
-                        requestNewLocationData()
-                    } else {
-//                        Add longitude, latitude to locationString
-                        locationString += "Latitude : " + location.latitude.toString() + "\n";
-                        locationString += " Longitude: " + location.longitude.toString();
-//                        println("checkPermissions: " + locationString);
-                        this.location_txt = locationString
-                    }
+                    requestNewLocationData()
+//
                 }
             } else {
                 Toast.makeText(this.context!!, "Turn on location", Toast.LENGTH_LONG).show()
@@ -236,9 +226,10 @@ class Title : Fragment() {
         override fun onLocationResult(locationResult: LocationResult) {
             var mLastLocation: Location = locationResult.lastLocation
 
-            locationString += "Latitude : " + mLastLocation.latitude.toString();
-            locationString += " Longitude: " + mLastLocation.longitude.toString();
-            println("onLocationResult: " + locationString);
+            val lat = mLastLocation.latitude.toString()
+            val long = mLastLocation.longitude.toString()
+
+            location_txt = "https://www.google.com/maps?q=${lat},${long}"
 
             val clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager;
             val clip = ClipData.newPlainText("Location", locationString);
@@ -280,6 +271,4 @@ class Title : Fragment() {
             PERMISSION_ID
         )
     }
-
-
 }
