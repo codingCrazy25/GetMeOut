@@ -34,6 +34,7 @@ import com.example.getmeout.model.AppDatabase
 import com.example.getmeout.model.Contact
 import com.example.getmeout.model.ContactDao
 import com.example.getmeout.viewmodel.ContactViewModel
+import com.example.getmeout.viewmodel.LocationViewModel
 import com.example.getmeout.viewmodel.MessageViewModel
 import com.google.android.gms.location.*
 import kotlinx.coroutines.GlobalScope
@@ -76,6 +77,7 @@ class Title : Fragment() {
 
         contactViewModel = ViewModelProvider(this).get(ContactViewModel::class.java)
         messageViewModel = ViewModelProvider(this).get(MessageViewModel::class.java)
+        val locationViewModel = ViewModelProvider(this).get(LocationViewModel::class.java)
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this.activity!!)
 
@@ -86,20 +88,25 @@ class Title : Fragment() {
             GlobalScope.launch {
                 var all_contacts_values = contactViewModel.getAllSelected()
                 var message = messageViewModel.getSelected()[0]
+                var final_message = message.message
+
+                var location_on = locationViewModel.getLocation_value().status
+                if (location_on) {
+                    getLastLocation()
 
 
-                getLastLocation()
+                    var timeout = 0
 
-                var timeout = 0
-
-                while (location_txt == "") {
-                    if (timeout > 8) {
-                        break
+                    while (location_txt == "") {
+                        if (timeout > 8) {
+                            break
+                        }
+                        Thread.sleep(250)
+                        timeout += 1
                     }
                     Thread.sleep(250)
                     timeout += 1
                 }
-                var final_message = message.message + "\n" + location_txt
                 println( final_message)
                 val smsManager = SmsManager.getDefault()
                     for (contact in all_contacts_values) {
@@ -231,9 +238,7 @@ class Title : Fragment() {
 
             location_txt = "https://www.google.com/maps?q=${lat},${long}"
 
-            val clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager;
-            val clip = ClipData.newPlainText("Location", locationString);
-            clipboard.setPrimaryClip(clip);
+            location_txt = "https://www.google.com/maps?q=${lat},${long}"
 
         }
     }
